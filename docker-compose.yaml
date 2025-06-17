@@ -1,0 +1,38 @@
+services:
+    web:
+      build: ./public
+      container_name: container_web
+      restart: always
+      ports:
+          - "80:80"
+      volumes:
+          - ./public:/var/www/html
+      depends_on:
+          - db
+      networks:
+          - app_networks
+      environment:
+          - DB_HOST=db
+          - DB_NAME=aval_acao
+          - DB_USER=user
+          - DB_PASS=pass
+
+    db:
+      image: mysql:8.0
+      container_name: container_mysql
+      restart: always
+      ports:
+        - "3306:3306"
+      networks:
+        - app_networks
+      volumes:
+        - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      environment:
+        MYSQL_ROOT_PASSWORD: senha_do_root
+        MYSQL_DATABASE: aval_acao
+        MYSQL_USER: user
+        MYSQL_PASSWORD: pass
+
+networks:
+  app_networks:
+    driver: bridge
